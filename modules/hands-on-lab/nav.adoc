@@ -1,0 +1,3 @@
+* xref:hands-on-lab.adoc[]
+** xref:setting-up-an-ansible-control-node-and-managed-hosts.adoc[]
+** xref:executing-ad-hoc-commands-on-remote-hosts.adoc[]

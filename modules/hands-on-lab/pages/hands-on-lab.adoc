@@ -1,0 +1,8 @@
+#  Hands-on Lab
+
+A Hands-on Lab provides practical experience to solidify your understanding of Ansible. In this session, you will actively engage with Ansible by performing essential setup and command execution.
+
+* Set up an Ansible Control Node and configure Managed Hosts, establishing the environment for automation.
+* Execute Ad-hoc Commands on Remote Hosts, demonstrating immediate, single-task operations across your infrastructure.
+
+This practical approach ensures you gain direct experience with core Ansible functionalities.

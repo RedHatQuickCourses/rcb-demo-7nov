@@ -1,6 +1,6 @@
 site:
-  title: FIXME Course Title
-  start_page: REPLACEREPONAME::index.adoc
+  title:  Introduction to Ansible
+  start_page: rcb-demo-7nov::index.adoc
 
 content:
   sources:
