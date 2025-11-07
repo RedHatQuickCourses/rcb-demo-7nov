@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Executing Ad-hoc Commands on Remote Hosts :: Introduction to Ansible</title>
+    <link rel="prev" href="setting-up-an-ansible-control-node-and-managed-hosts.html">
+    <link rel="next" href="../appendix/appendix.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Introduction to Ansible</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rcb-demo-7nov" data-version="1.0.0">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Introduction to Ansible</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ansible-basics/ansible-basics.html">Ansible Basics</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ansible-basics/what-is-ansible.html">What is Ansible?</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ansible-basics/ansible-architecture-and-components.html">Ansible Architecture and Components</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="hands-on-lab.html">Hands-on Lab</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="setting-up-an-ansible-control-node-and-managed-hosts.html">Setting up an Ansible Control Node and Managed Hosts</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="executing-ad-hoc-commands-on-remote-hosts.html">Executing Ad-hoc Commands on Remote Hosts</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Introduction to Ansible</span>
+    <span class="version">1.0.0</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Introduction to Ansible</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1.0.0</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Introduction to Ansible</a></li>
+    <li><a href="hands-on-lab.html">Hands-on Lab</a></li>
+    <li><a href="executing-ad-hoc-commands-on-remote-hosts.html">Executing Ad-hoc Commands on Remote Hosts</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Executing Ad-hoc Commands on Remote Hosts</h1>
+<h1 id="_executing_ad_hoc_commands_on_remote_hosts" class="sect0"><a class="anchor" href="#_executing_ad_hoc_commands_on_remote_hosts"></a>Executing Ad-hoc Commands on Remote Hosts</h1>
+<div class="paragraph">
+<p>In the previous lab, you set up an Ansible Control Node and configured Managed Hosts. Now, it&#8217;s time to put Ansible to work by executing your first commands on these remote systems. This section introduces you to Ansible ad-hoc commands, which are perfect for performing quick, one-off tasks across your infrastructure.</p>
+</div>
+<div class="sect1">
+<h2 id="_what_are_ansible_ad_hoc_commands"><a class="anchor" href="#_what_are_ansible_ad_hoc_commands"></a>What are Ansible Ad-hoc Commands?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ansible ad-hoc commands are simple, single-task commands executed directly from the command line on your Ansible Control Node, targeting one or more Managed Hosts. They are designed for quick tasks that don&#8217;t require the persistent, structured automation that Ansible playbooks provide. Think of them as executing a single shell command or using a specific Ansible module <strong>just once</strong> to achieve an immediate result.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Contrast with Playbooks</strong>:</p>
+</li>
+<li>
+<p><strong>Ad-hoc commands</strong> are for immediate, single-purpose operations (e.g., rebooting a server, checking disk space, installing a single package). They are quick and simple.</p>
+</li>
+<li>
+<p><strong>Playbooks</strong> are for complex, multi-step, repeatable automation, configuration management, and orchestration (e.g., deploying a multi-tier application, configuring an entire web server stack). They are declarative, version-controlled, and designed for consistency.</p>
+</li>
+<li>
+<p><strong>Common Use Cases for Ad-hoc Commands</strong>:</p>
+</li>
+<li>
+<p><strong>Checking Connectivity</strong>: Verifying that Ansible can reach and authenticate with your Managed Hosts.</p>
+</li>
+<li>
+<p><strong>Gathering Information</strong>: Quickly collecting facts about your systems (e.g., OS version, IP addresses, disk usage).</p>
+</li>
+<li>
+<p><strong>Managing Packages</strong>: Installing, upgrading, or removing software packages on multiple hosts.</p>
+</li>
+<li>
+<p><strong>Managing Services</strong>: Starting, stopping, or restarting services across your servers.</p>
+</li>
+<li>
+<p><strong>Running Arbitrary Commands</strong>: Executing shell commands or scripts on remote machines.</p>
+</li>
+<li>
+<p><strong>User Management</strong>: Creating or deleting users.</p>
+</li>
+<li>
+<p><strong>File Management</strong>: Copying files, changing permissions, or deleting files.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_ansible_command_syntax"><a class="anchor" href="#_the_ansible_command_syntax"></a>The <code>ansible</code> Command Syntax</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The general syntax for running an ad-hoc command using the <code>ansible</code> command-line tool is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible &lt;pattern&gt; -m &lt;module&gt; -a "&lt;module_arguments&gt;" [options]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s break down each component:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ansible</code>: This is the main command-line utility for running ad-hoc commands.</p>
+</li>
+<li>
+<p><code>&lt;pattern&gt;</code>: This specifies which hosts or groups from your inventory file you want to target.</p>
+</li>
+<li>
+<p><code>all</code>: Targets all hosts in your inventory.</p>
+</li>
+<li>
+<p><code>webservers</code>: Targets all hosts in the <code>webservers</code> group.</p>
+</li>
+<li>
+<p><code>host1,host2</code>: Targets specific hosts by name.</p>
+</li>
+<li>
+<p><code>webservers:&amp;dbservers</code>: Targets hosts that are in both the <code>webservers</code> AND <code>dbservers</code> groups.</p>
+</li>
+<li>
+<p><code>webservers:!dbservers</code>: Targets hosts in the <code>webservers</code> group but NOT in the <code>dbservers</code> group.</p>
+</li>
+<li>
+<p><code>-m &lt;module&gt;</code>: This flag specifies the Ansible module you want to use. Modules are reusable units of code that Ansible executes on the Managed Hosts. Ansible comes with hundreds of built-in modules for various tasks.</p>
+</li>
+<li>
+<p>Examples: <code>ping</code>, <code>command</code>, <code>shell</code>, <code>apt</code>, <code>yum</code>, <code>service</code>, <code>copy</code>, <code>file</code>, <code>user</code>, <code>setup</code>.</p>
+</li>
+<li>
+<p><code>-a "&lt;module_arguments&gt;"</code>: This flag passes arguments to the specified module. The arguments are specific to each module and should be enclosed in double quotes.</p>
+</li>
+<li>
+<p><code>[options]</code>: These are optional flags that modify the command&#8217;s behavior:</p>
+</li>
+<li>
+<p><code>-i &lt;inventory_file&gt;</code>: Specifies an alternative inventory file if you&#8217;re not using the default (<code>/etc/ansible/hosts</code> or <code>~/.ansible/hosts</code>).</p>
+</li>
+<li>
+<p><code>-u &lt;remote_user&gt;</code>: Specifies the user to connect as on the Managed Hosts. If not specified, Ansible uses the current user on the Control Node or the <code>remote_user</code> defined in <code>ansible.cfg</code>.</p>
+</li>
+<li>
+<p><code>--become</code> or <code>-b</code>: Enables privilege escalation (e.g., <code>sudo</code>) on the Managed Hosts to run commands as root or another user.</p>
+</li>
+<li>
+<p><code>--ask-become-pass</code> or <code>-K</code>: Prompts for the <code>sudo</code> password on the Managed Hosts.</p>
+</li>
+<li>
+<p><code>--ask-pass</code> or <code>-k</code>: Prompts for the SSH password to connect to the Managed Hosts. Useful if you&#8217;re not using SSH keys.</p>
+</li>
+<li>
+<p><code>-f &lt;forks&gt;</code> or <code>--forks &lt;forks&gt;</code>: Specifies the number of parallel processes to use (default is 5).</p>
+</li>
+<li>
+<p><code>-v</code>, <code>-vv</code>, <code>-vvv</code>, <code>-vvvv</code>: Increases verbosity of output for debugging.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hands_on_ad_hoc"><a class="anchor" href="#_hands_on_ad_hoc"></a>Hands-on Lab: Executing Ad-hoc Commands</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this lab, you will practice running various ad-hoc commands to interact with your Managed Hosts. Ensure your Ansible Control Node and Managed Hosts are running and properly configured as per the previous lab.</p>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>An Ansible Control Node with Ansible installed.</p>
+</li>
+<li>
+<p>At least one Managed Host reachable via SSH from the Control Node.</p>
+</li>
+<li>
+<p>Your <code>inventory</code> file (e.g., <code>~/ansible-inventory/inventory.ini</code>) is correctly configured and contains your Managed Hosts.</p>
+</li>
+<li>
+<p>SSH keys are set up for passwordless access, or you are prepared to provide passwords when prompted.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_activity_1_testing_connectivity_with_the_ping_module"><a class="anchor" href="#_activity_1_testing_connectivity_with_the_ping_module"></a>Activity 1: Testing Connectivity with the <code>ping</code> module</h3>
+<div class="paragraph">
+<p>The <code>ping</code> module is the simplest way to test if Ansible can connect to your Managed Hosts, authenticate, and run a basic command. It doesn&#8217;t use ICMP ping; instead, it tests the Ansible connection itself.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On your Ansible Control Node, execute the following command to <code>ping</code> all hosts in your inventory:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible all -m ping -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>-i ~/ansible-inventory/inventory.ini</code> flag ensures Ansible uses your specific inventory file. If you have configured Ansible to use this inventory file by default (e.g., via <code>ansible.cfg</code> or by placing it in <code>/etc/ansible/hosts</code>), you can omit this flag. For this lab, we&#8217;ll explicitly include it for clarity.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><strong>Expected Output</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">managed-host-1 | SUCCESS =&gt; {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+managed-host-2 | SUCCESS =&gt; {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you see <code>SUCCESS &#8658; {"ping": "pong"}</code>, it means Ansible successfully connected and executed the module on the Managed Host. If you see <code>UNREACHABLE</code> or <code>FAILED</code>, double-check your SSH connectivity, user permissions, and inventory file.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_activity_2_running_shell_commands_with_command_and_shell_modules"><a class="anchor" href="#_activity_2_running_shell_commands_with_command_and_shell_modules"></a>Activity 2: Running Shell Commands with <code>command</code> and <code>shell</code> modules</h3>
+<div class="paragraph">
+<p>The <code>command</code> and <code>shell</code> modules allow you to execute arbitrary commands on your Managed Hosts.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>command</code> module is simpler and safer. It <strong>does not</strong> process variables, pipes, or redirects. It&#8217;s best for basic commands like <code>ls</code>, <code>df</code>, <code>uptime</code>.</p>
+</li>
+<li>
+<p>The <code>shell</code> module is more powerful. It executes commands through a shell (like <code>bash</code>), allowing you to use shell features like pipes (<code>|</code>), redirects (<code>&gt;</code>), environment variables, and more. Use <code>shell</code> when <code>command</code> isn&#8217;t sufficient.</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use the <code>command</code> module to check the uptime of your Managed Hosts:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible all -m command -a "uptime" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Expected Output</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">managed-host-1 | CHANGED | rc=0 &gt;&gt;
+ 09:30:00 up 1 day, 2:34,  1 user,  load average: 0.00, 0.01, 0.05
+managed-host-2 | CHANGED | rc=0 &gt;&gt;
+ 09:30:00 up 1 day, 2:34,  1 user,  load average: 0.00, 0.01, 0.05</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>CHANGED | rc=0</code> indicates that the command was executed successfully (return code 0). The <code>&gt;&gt;</code> signifies the standard output of the command.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Use the <code>shell</code> module to list the contents of <code>/var/log</code> and count the number of lines. This demonstrates using a pipe (<code>|</code>).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible all -m shell -a "ls -l /var/log | wc -l" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Expected Output</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">managed-host-1 | CHANGED | rc=0 &gt;&gt;
+42
+managed-host-2 | CHANGED | rc=0 &gt;&gt;
+38</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_activity_3_managing_packages_with_apt_or_yum_requires_privilege_escalation"><a class="anchor" href="#_activity_3_managing_packages_with_apt_or_yum_requires_privilege_escalation"></a>Activity 3: Managing Packages with <code>apt</code> or <code>yum</code> (Requires Privilege Escalation)</h3>
+<div class="paragraph">
+<p>Ansible provides modules to manage packages specific to the operating system&#8217;s package manager (e.g., <code>apt</code> for Debian/Ubuntu, <code>yum</code> for CentOS/RHEL, <code>dnf</code> for Fedora/RHEL8+). Package management typically requires root privileges, so you&#8217;ll need to use the <code>--become</code> flag.</p>
+</div>
+<div class="paragraph">
+<p>First, identify the package manager for your Managed Hosts. For this lab, we&#8217;ll assume Ubuntu/Debian, using the <code>apt</code> module. If your hosts are CentOS/RHEL, use <code>yum</code> instead.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Install a package (e.g., <code>nginx</code> for webservers) using <code>apt</code> with <code>--become</code></strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m apt -a "name=nginx state=present" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If your <code>sudo</code> user on the Managed Host requires a password, you&#8217;ll also need to add <code>--ask-become-pass</code> or <code>-K</code> to the command.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><strong>Expected Output</strong>:</p>
+<div class="paragraph">
+<p>You should see output indicating that <code>nginx</code> was installed or is already at the latest version. The <code>changed=true</code> or <code>changed=false</code> status will reflect this.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">managed-host-1 | CHANGED =&gt; {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "cache_update_time": 1701234567,
+    "cache_updated": true,
+    "changed": true,
+    "msg": "All requested packages are already installed.",
+    "package": "nginx",
+    "state": "present",
+    "stderr": "",
+    "stderr_lines": [],
+    "stdout": "N: Download is performed unauthenticated because the user is not in the trusted 'apt:trusted' group (not the root user).\n",
+    "stdout_lines": [
+        "N: Download is performed unauthenticated because the user is not in the trusted 'apt:trusted' group (not the root user)."
+    ]
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Verify <code>nginx</code> installation (optional)</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m command -a "dpkg -l | grep nginx" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Remove the package using <code>apt</code> with <code>--become</code></strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m apt -a "name=nginx state=absent" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_activity_4_managing_services_with_the_service_module"><a class="anchor" href="#_activity_4_managing_services_with_the_service_module"></a>Activity 4: Managing Services with the <code>service</code> module</h3>
+<div class="paragraph">
+<p>The <code>service</code> module is used to start, stop, restart, enable, or disable system services (e.g., <code>nginx</code>, <code>apache2</code>, <code>sshd</code>). It also typically requires privilege escalation.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Install <code>nginx</code> again on <code>managed-host-1</code> to have a service to manage:</strong></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m apt -a "name=nginx state=present" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Start and enable the <code>nginx</code> service on <code>managed-host-1</code></strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m service -a "name=nginx state=started enabled=yes" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>state=started</code>: Ensures the service is running.</p>
+</li>
+<li>
+<p><code>enabled=yes</code>: Configures the service to start automatically on boot.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Expected Output</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">managed-host-1 | CHANGED =&gt; {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": true,
+    "name": "nginx",
+    "state": "started"
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Check the status of the <code>nginx</code> service</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m command -a "systemctl status nginx" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Stop the <code>nginx</code> service</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m service -a "name=nginx state=stopped" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_activity_5_gathering_facts_with_the_setup_module"><a class="anchor" href="#_activity_5_gathering_facts_with_the_setup_module"></a>Activity 5: Gathering Facts with the <code>setup</code> module</h3>
+<div class="paragraph">
+<p>The <code>setup</code> module (also known as the "facts" module) collects detailed information about the Managed Hosts. This "fact gathering" is performed automatically by playbooks by default but can be run ad-hoc. The collected facts include network interfaces, operating system details, memory, disk usage, and much more.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Gather all facts from <code>managed-host-2</code></strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-2 -m setup -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command will output a large JSON dictionary containing a vast amount of information about <code>managed-host-2</code>.</p>
+</div>
+</li>
+<li>
+<p><strong>Filter specific facts</strong>: Sometimes you only need a subset of facts. You can use the <code>filter</code> argument to narrow down the output. Let&#8217;s find out the operating system distribution.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-2 -m setup -a "filter=ansible_distribution*" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Expected Output</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">managed-host-2 | SUCCESS =&gt; {
+    "ansible_facts": {
+        "ansible_distribution": "Ubuntu",
+        "ansible_distribution_file_parsed": true,
+        "ansible_distribution_file_path": "/etc/os-release",
+        "ansible_distribution_file_variable_major_version": "22",
+        "ansible_distribution_file_variable_os_id": "ubuntu",
+        "ansible_distribution_file_variable_version": "22.04",
+        "ansible_distribution_major_version": "22",
+        "ansible_distribution_release": "jammy",
+        "ansible_distribution_version": "22.04",
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This demonstrates how powerful the <code>setup</code> module is for quickly gathering system-specific data.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_activity_6_managing_files"><a class="anchor" href="#_activity_6_managing_files"></a>Activity 6: Managing Files</h3>
+<div class="paragraph">
+<p>Ansible provides modules like <code>copy</code>, <code>file</code>, <code>template</code> (for playbooks), etc., to manage files and directories on remote hosts.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Create a new directory <code>/tmp/ansible_test</code> on <code>managed-host-2</code></strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-2 -m file -a "path=/tmp/ansible_test state=directory mode=0755" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>path</code>: Specifies the directory path.</p>
+</li>
+<li>
+<p><code>state=directory</code>: Ensures it&#8217;s a directory.</p>
+</li>
+<li>
+<p><code>mode=0755</code>: Sets the permissions.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Verify the directory creation</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-2 -m command -a "ls -ld /tmp/ansible_test" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Create an empty file within the new directory</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-2 -m file -a "path=/tmp/ansible_test/my_test_file.txt state=touch mode=0644 owner=root group=root" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>state=touch</code>: Creates an empty file or updates its timestamp if it exists.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Verify the file creation</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-2 -m command -a "ls -l /tmp/ansible_test/my_test_file.txt" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Remove the directory and its contents</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-2 -m file -a "path=/tmp/ansible_test state=absent" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>state=absent</code>: Ensures the path (and its contents if it&#8217;s a directory) does not exist.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Verify the directory removal</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-2 -m command -a "ls -ld /tmp/ansible_test" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command should return an error indicating the file or directory does not exist, confirming its removal.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_activity_7_managing_users"><a class="anchor" href="#_activity_7_managing_users"></a>Activity 7: Managing Users</h3>
+<div class="paragraph">
+<p>The <code>user</code> module allows you to create, modify, or delete users on Managed Hosts. This also typically requires privilege escalation.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Create a new user <code>ansibletestuser</code> on <code>managed-host-1</code></strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m user -a "name=ansibletestuser comment='Ansible Test User' shell=/bin/bash groups=sudo append=yes password='!'" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>name</code>: The username.</p>
+</li>
+<li>
+<p><code>comment</code>: A descriptive comment.</p>
+</li>
+<li>
+<p><code>shell</code>: The user&#8217;s default shell.</p>
+</li>
+<li>
+<p><code>groups=sudo append=yes</code>: Adds the user to the <code>sudo</code> group without removing them from other groups.</p>
+</li>
+<li>
+<p><code>password='!'</code>: Sets a password that cannot be used for login directly (forces SSH key usage or external authentication). For a real password, you&#8217;d use <code>password='{{ "your_password_here" | password_hash("sha512") }}'</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Verify the user creation</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m command -a "id ansibletestuser" -i ~/ansible-inventory/inventory.ini
+ansible managed-host-1 -m command -a "grep ansibletestuser /etc/sudoers.d/*" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Remove the user <code>ansibletestuser</code></strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m user -a "name=ansibletestuser state=absent remove=yes" --become -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>state=absent</code>: Ensures the user does not exist.</p>
+</li>
+<li>
+<p><code>remove=yes</code>: Removes the user&#8217;s home directory and mail spool.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Verify the user removal</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ansible managed-host-1 -m command -a "id ansibletestuser" -i ~/ansible-inventory/inventory.ini</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command should return an error indicating the user does not exist.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting_ad_hoc_commands"><a class="anchor" href="#_troubleshooting_ad_hoc_commands"></a>Troubleshooting Ad-hoc Commands</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong><code>UNREACHABLE</code></strong>:</p>
+</li>
+<li>
+<p><strong>Connectivity</strong>: Can your Control Node SSH to the Managed Host using the specified user (<code>-u</code>)? Test with <code>ssh &lt;user&gt;@&lt;managed_host&gt;</code>.</p>
+</li>
+<li>
+<p><strong>Firewall</strong>: Is the SSH port (22) open on the Managed Host and allowed by any network firewalls?</p>
+</li>
+<li>
+<p><strong>Inventory</strong>: Is the hostname/IP address in your inventory file correct?</p>
+</li>
+<li>
+<p><strong><code>FAILED!</code> or <code>rc=1</code> (or other non-zero return code)</strong>:</p>
+</li>
+<li>
+<p><strong>Permissions</strong>: Does the remote user have the necessary permissions to execute the command or module? Use <code>--become</code> (<code>-b</code>) for privilege escalation.</p>
+</li>
+<li>
+<p><strong>Sudo Password</strong>: If <code>--become</code> is used, does the remote user have <code>sudo</code> privileges, and if required, are you providing the <code>sudo</code> password (<code>--ask-become-pass</code> / <code>-K</code>)?</p>
+</li>
+<li>
+<p><strong>Command/Module Syntax</strong>: Is the command or module&#8217;s syntax correct? Check the Ansible documentation for the specific module.</p>
+</li>
+<li>
+<p><strong>Path</strong>: Is the command executable available in the <code>PATH</code> of the remote user?</p>
+</li>
+<li>
+<p><strong><code>No such file or directory</code></strong>: The file or directory specified in your command/module arguments does not exist on the Managed Host.</p>
+</li>
+<li>
+<p><strong>Verbosity</strong>: Use <code>-v</code>, <code>-vv</code>, <code>-vvv</code>, or <code>-vvvv</code> with your <code>ansible</code> command to get more detailed output, which can help pinpoint the exact error.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ad-hoc commands are a fundamental part of Ansible, providing a quick and efficient way to interact with your infrastructure for immediate tasks. As you become more comfortable with them, you&#8217;ll find them invaluable for daily administrative operations. For more complex, repeatable, and declarative automation, you&#8217;ll transition to using Ansible Playbooks, which build upon the same module concepts.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="setting-up-an-ansible-control-node-and-managed-hosts.html">Setting up an Ansible Control Node and Managed Hosts</a></span>
+  <span class="next"><a href="../appendix/appendix.html">Appendix</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

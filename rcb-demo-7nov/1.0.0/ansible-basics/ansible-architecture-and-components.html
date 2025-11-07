@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Ansible Architecture and Components :: Introduction to Ansible</title>
+    <link rel="prev" href="what-is-ansible.html">
+    <link rel="next" href="../hands-on-lab/hands-on-lab.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Introduction to Ansible</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rcb-demo-7nov" data-version="1.0.0">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Introduction to Ansible</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="ansible-basics.html">Ansible Basics</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="what-is-ansible.html">What is Ansible?</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="ansible-architecture-and-components.html">Ansible Architecture and Components</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../hands-on-lab/hands-on-lab.html">Hands-on Lab</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hands-on-lab/setting-up-an-ansible-control-node-and-managed-hosts.html">Setting up an Ansible Control Node and Managed Hosts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hands-on-lab/executing-ad-hoc-commands-on-remote-hosts.html">Executing Ad-hoc Commands on Remote Hosts</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Introduction to Ansible</span>
+    <span class="version">1.0.0</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Introduction to Ansible</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1.0.0</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Introduction to Ansible</a></li>
+    <li><a href="ansible-basics.html">Ansible Basics</a></li>
+    <li><a href="ansible-architecture-and-components.html">Ansible Architecture and Components</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Ansible Architecture and Components</h1>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">= Ansible Architecture and Components
+
+Ansible's architecture is designed for simplicity, efficiency, and extensibility. Unlike many other automation tools, Ansible operates on an agentless model, meaning there's no software or daemon required to be installed on the machines it manages. This significantly reduces overhead and simplifies setup, security, and maintenance.
+
+== Agentless Architecture
+
+At its core, Ansible functions with two main types of systems:
+
+.  *Control Node*: This is the machine where Ansible is installed and from which you execute your automation tasks. It's typically a Linux-based system.
+.  *Managed Hosts (or Managed Nodes)*: These are the servers, network devices, or other endpoints that Ansible manages. They can be Linux, Windows, or various network hardware.
+
+image::ansible-architecture.svg[Ansible Architecture Overview, 600]
+
+The interaction between the Control Node and Managed Hosts primarily occurs over standard SSH (for Linux/Unix-like systems) or WinRM (for Windows systems).
+
+.  **SSH Connection (Linux/Unix-like)**: The Ansible Control Node connects to Managed Hosts using SSH. It leverages existing SSH daemons on the remote machines, requiring only Python (version 2.7 or 3.5+, depending on Ansible version) on the Managed Host to execute modules.
+.  **WinRM Connection (Windows)**: For Windows machines, Ansible uses the native Windows Remote Management (WinRM) protocol.
+.  **Agentless Nature**: Because Ansible uses standard secure shell protocols and doesn't require any persistent agent software on the Managed Hosts, it's often referred to as "agentless." This means less overhead, fewer security considerations for agents, and easier scaling.
+
+== Key Components of Ansible
+
+Ansible's power comes from its modular and component-driven design. Understanding these components is crucial for effectively leveraging Ansible for automation.
+
+=== 1. Inventory
+
+The inventory is a list of the Managed Hosts that Ansible will manage. It acts as the "database" of your infrastructure.
+
+*   *Host Grouping*: Hosts can be organized into groups, allowing you to target specific sets of machines (e.g., `webservers`, `databases`, `development`).
+*   *Variables*: You can define variables associated with specific hosts or groups within the inventory. These variables can configure connection parameters, application settings, or any other data required for your automation.
+*   *Formats*: Inventories are typically defined in INI or YAML format.
+*   *Static vs. Dynamic*:
+    *   *Static Inventory*: A manually created file (e.g., `hosts` file) listing your servers.
+    *   *Dynamic Inventory*: Scripts that pull inventory information from external sources like cloud providers (AWS EC2, Azure, Google Cloud), CMDBs, or virtualization platforms. This is essential for managing elastic, constantly changing infrastructures.
+
+[source,ini]
+----
+# Example Static Inventory (INI format)
+[webservers]
+web1.example.com
+web2.example.com
+
+[databases]
+db1.example.com
+
+[all:vars]
+ansible_user=devops
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+----
+
+=== 2. Modules
+
+Modules are the actual units of code that Ansible executes on the Managed Hosts. They are idempotent, meaning they can be run multiple times without causing unintended changes if the desired state is already met.
+
+*   *Purpose*: Each module is designed to perform a specific task, such as managing packages (`apt`, `yum`), copying files (`copy`), managing services (`service`), or executing commands (`command`, `shell`).
+*   *Execution*: When you run an Ansible task, the Control Node temporarily pushes the relevant module to the Managed Host, executes it, and then removes it.
+*   *Idempotency*: A key principle of Ansible. Running a module multiple times on a target system will achieve the same result as running it once (assuming the desired state is already met). For example, if you use the `apt` module to ensure a package is installed, running it again when the package is already there will not re-install it, it will simply report that the system is already in the desired state.
+*   *Thousands Available*: Ansible ships with thousands of modules covering a vast array of tasks and systems, from basic system administration to cloud provisioning and network device management.
+
+=== 3. Plugins
+
+Plugins extend Ansible's core functionality. While modules execute on the Managed Hosts, plugins typically run on the Control Node to enhance various aspects of Ansible's operation.
+
+*   *Connection Plugins*: Determine how Ansible connects to Managed Hosts (e.g., `ssh`, `winrm`, `local`).
+*   *Lookup Plugins*: Fetch data from external sources (e.g., `file` to read content from a local file, `env` to read environment variables, `password` for vault-like interactions).
+*   *Callback Plugins*: Allow you to hook into Ansible's event stream for things like logging, reporting, or displaying custom output.
+*   *Filter Plugins*: Transform data in Jinja2 templates (e.g., `to_json`, `union`).
+*   *Strategy Plugins*: Control how tasks are executed across the Managed Hosts (e.g., `linear` for one host at a time, `free` for all hosts concurrently).
+
+=== 4. Playbooks
+
+Playbooks are the heart of Ansible automation. They are YAML files that define a set of ordered tasks to be executed on specified Managed Hosts.
+
+*   *YAML Format*: Easy-to-read, human-friendly data serialization standard.
+*   *Plays*: A playbook consists of one or more "plays." Each play maps a group of hosts to a set of tasks.
+*   *Tasks*: Each task calls an Ansible module to perform a specific action (e.g., install a package, start a service, create a file).
+*   *Orchestration*: Playbooks enable complex multi-machine deployments, rolling updates, and continuous delivery scenarios. They describe the desired state of your infrastructure.
+*   *Conditionals and Loops*: Playbooks support conditional statements (`when`) and loops (`loop`) for more dynamic automation.
+*   *Handlers*: Special tasks that are only triggered when explicitly notified by another task, typically used for restarting services after configuration changes.
+
+[source,yaml]
+----
+# Example Playbook (hello_world.yml)
+---
+- name: Ensure web servers are configured
+  hosts: webservers
+  become: yes # Run tasks with elevated privileges
+
+  tasks:
+    - name: Update apt cache (Ubuntu/Debian)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install Nginx web server
+      apt:
+        name: nginx
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+----
+
+=== 5. Ad-hoc Commands
+
+While playbooks are for complex, reusable automation, ad-hoc commands are quick, one-liner commands used to perform a single task on remote hosts directly from the command line. They are useful for quick checks, reboots, or executing a single module.
+
+[source,bash]
+----
+# Example Ad-hoc Command
+ansible webservers -m ping
+ansible all -a "df -h"
+----
+
+*   `ansible`: The main command-line tool for ad-hoc commands.
+*   `webservers` / `all`: Specifies the hosts or host groups from the inventory to target.
+*   `-m ping`: Specifies the module to use (here, the `ping` module).
+*   `-a "df -h"`: Specifies arguments to pass to the module. When using the `command` or `shell` modules, these are the commands to execute.
+
+=== 6. Configuration Files
+
+Ansible uses configuration files to manage its settings. The primary configuration file is `ansible.cfg`.
+
+*   *Precedence*: Ansible looks for `ansible.cfg` in several locations in a specific order:
+    1.  `ANSIBLE_CONFIG` environment variable.
+    2.  `./ansible.cfg` (in the current directory).
+    3.  `~/.ansible.cfg` (in your home directory).
+    4.  `/etc/ansible/ansible.cfg`.
+*   *Settings*: It configures various aspects like inventory location, default connection type, parallelism, privilege escalation settings, module paths, and more.
+
+=== 7. Roles
+
+Roles are a way to organize Ansible content (tasks, handlers, variables, templates, files) into a well-defined, reusable directory structure. They promote modularity, reusability, and shareability of automation content.
+
+*   *Structure*: A role typically has a standard directory layout: `tasks/`, `handlers/`, `vars/`, `defaults/`, `files/`, `templates/`, `meta/`.
+*   *Reusability*: Roles allow you to create portable automation units that can be easily shared within your team or with the community via Ansible Galaxy.
+*   *Abstraction*: They abstract away the complexity of configuring a specific component or application.
+
+=== 8. Ansible Vault
+
+Ansible Vault is a feature that allows you to encrypt sensitive data, such as passwords, API keys, and other secrets, within your Ansible playbooks, roles, and variable files. This ensures that sensitive information is not stored in plain text, enhancing security.
+
+*   *Encryption*: Encrypts files or strings using symmetric encryption.
+*   *Integration*: Seamlessly integrated into Ansible; you specify a vault password when running playbooks that use encrypted content.
+
+=== 9. Collections
+
+Introduced in Ansible 2.9, Collections are the new standard for packaging and distributing Ansible content. They are a self-contained unit that can include:
+
+*   Modules
+*   Plugins (connection, lookup, callback, etc.)
+*   Roles
+*   Playbooks
+*   Module utilities
+
+*   *Organization*: Collections provide a structured way to organize related Ansible content, often by domain (e.g., `community.general`, `ansible.posix`, `amazon.aws`).
+*   *Distribution*: They simplify the distribution and management of Ansible content, allowing specific versions of modules or roles to be easily included in projects.
+*   *Namespacing*: Content within a collection is namespaced (e.g., `community.general.apt` instead of just `apt`), reducing naming conflicts and making it clear where a module or plugin comes from.
+
+By understanding these components and how they interact, you can effectively design, build, and scale your automation efforts with Ansible.</code></pre>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="what-is-ansible.html">What is Ansible?</a></span>
+  <span class="next"><a href="../hands-on-lab/hands-on-lab.html">Hands-on Lab</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
